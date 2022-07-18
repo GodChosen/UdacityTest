@@ -9,7 +9,7 @@ orbs:
 # Define a job to be invoked later in a workflow.
 # See: https://circleci.com/docs/2.0/configuration-reference/#jobs
 jobs:
-  save_hello_world_output:
+  print_hello:
     # Specify the execution environment. You can specify an image from Dockerhub or use one of our Convenience Images from CircleCI's Developer Hub.
     # See: https://circleci.com/docs/2.0/configuration-reference/#docker-machine-macos-windows-executor
     docker:
@@ -17,12 +17,17 @@ jobs:
     # Add steps to the job
     # See: https://circleci.com/docs/2.0/configuration-reference/#steps
     steps:
-      - run: echo 'hello world' > output.txt
-      - persist_to_workspace:
-          root: /tmp/workspace
-          paths:
-            - output.txt
-  print_output_file:
+      - run: echo hello
+  print_world:
+    # Specify the execution environment. You can specify an image from Dockerhub or use one of our Convenience Images from CircleCI's Developer Hub.
+    # See: https://circleci.com/docs/2.0/configuration-reference/#docker-machine-macos-windows-executor
+    docker:
+      - image: cimg/base:2020.01
+    # Add steps to the job
+    # See: https://circleci.com/docs/2.0/configuration-reference/#steps
+    steps:
+      - run: echo world
+  print_my_name:
     # Specify the execution environment. You can specify an image from Dockerhub or use one of our Convenience Images from CircleCI's Developer Hub.
     # See: https://circleci.com/docs/2.0/configuration-reference/#docker-machine-macos-windows-executor
     docker:
@@ -30,16 +35,16 @@ jobs:
     # Add steps to the job
     # See: https://circleci.com/docs/2.0/configuration-reference/#steps
     steps:
-      - attach_workspace:
-          at: /tmp/workspace
-      - run: cat output.txt
-      
+      - run:
+          name: "What was my custom environment variable?"
+          command: echo ${MY_NAME1}
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
 workflows:
   welcome:
     jobs:
-      - save_hello_world_output
-      - print_output_file:
-        requires:
-          - save_hello_world_output
+      - welcome/run
+      - print_hello
+      - print_world: 
+          requires: [print_hello]
+      - print_my_name
