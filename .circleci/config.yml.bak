@@ -19,7 +19,7 @@ jobs:
     steps:
       - run: echo 'hello world' > output.txt
       - persist_to_workspace:
-          root: /tmp/workspace
+          root: /tmp/root
           paths:
             - output.txt
   print_output_file:
