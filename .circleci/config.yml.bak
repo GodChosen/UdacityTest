@@ -2,6 +2,13 @@
 # See: https://circleci.com/docs/2.0/configuration-reference
 version: 2.1
 
+# Using commands to achieve code reuse
+commands:
+  print_pipeline_id:
+    description: "A command to print Circle CI Workflow ID"
+    steps:
+      - run: echo $CIRCLE_WORKFLOW_ID
+
 orbs:
   # Declare a dependency on the welcome-orb
   welcome: circleci/welcome-orb@0.4.1
@@ -9,6 +16,11 @@ orbs:
 # Define a job to be invoked later in a workflow.
 # See: https://circleci.com/docs/2.0/configuration-reference/#jobs
 jobs:
+  print_command_output:
+  docker:
+    - image: circleci/node:13.8.0
+  steps:
+    - print_pipeline_id
   save_hello_world_output:
     # Specify the execution environment. You can specify an image from Dockerhub or use one of our Convenience Images from CircleCI's Developer Hub.
     # See: https://circleci.com/docs/2.0/configuration-reference/#docker-machine-macos-windows-executor
@@ -32,7 +44,7 @@ jobs:
     steps:
       - attach_workspace:
           at: ~/
-      - run: cat output.txt
+      - run: cat ~/output.txt
       
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
